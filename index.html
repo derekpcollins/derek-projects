@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Projects</title>
+  <style>
+    :root {
+      --bg: #f9f9f9;
+      --card-bg: #ffffff;
+      --card-border: 1px solid rgba(0,0,0,0.08);
+      --text-primary: #111;
+      --text-secondary: #666;
+      --accent: #2563eb;
+      --pill-active-bg: #111;
+      --pill-active-text: #fff;
+      --metric-bg: #ffffff;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #111;
+        --card-bg: #1a1a1a;
+        --card-border: 1px solid rgba(255,255,255,0.08);
+        --text-primary: #f0f0f0;
+        --text-secondary: #888;
+        --pill-active-bg: #f0f0f0;
+        --pill-active-text: #111;
+        --metric-bg: #1a1a1a;
+      }
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 14px;
+      background: var(--bg);
+      color: var(--text-primary);
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    .page-header {
+      margin-bottom: 20px;
+    }
+
+    .page-title {
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--text-primary);
+      line-height: 1.2;
+    }
+
+    .page-subtitle {
+      color: var(--text-secondary);
+      font-size: 13px;
+      margin-top: 4px;
+    }
+
+    /* Metric cards */
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .metric-card {
+      background: var(--metric-bg);
+      border: var(--card-border);
+      border-radius: 8px;
+      padding: 12px 14px;
+    }
+
+    .metric-label {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-bottom: 4px;
+    }
+
+    .metric-value {
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    /* Filter bar */
+    .filters {
+      margin-bottom: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .filter-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      align-items: center;
+    }
+
+    .filter-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 13px;
+      color: var(--text-secondary);
+      padding: 4px 10px;
+      border-radius: 20px;
+      transition: color 0.1s, background 0.1s;
+      line-height: 1.5;
+    }
+
+    .filter-btn:hover {
+      color: var(--text-primary);
+    }
+
+    .filter-btn.active {
+      background: var(--pill-active-bg);
+      color: var(--pill-active-text);
+    }
+
+    /* Project list */
+    .project-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .project-card {
+      background: var(--card-bg);
+      border: var(--card-border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 14px;
+      cursor: pointer;
+      user-select: none;
+      gap: 12px;
+    }
+
+    .card-header:hover {
+      background: rgba(0,0,0,0.02);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .card-header:hover {
+        background: rgba(255,255,255,0.03);
+      }
+    }
+
+    .card-left {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+      min-width: 0;
+    }
+
+    .card-title {
+      font-weight: 500;
+      color: var(--text-primary);
+      white-space: nowrap;
+    }
+
+    .card-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    /* Badges */
+    .badge {
+      font-size: 11px;
+      font-weight: 500;
+      padding: 2px 7px;
+      border-radius: 20px;
+      line-height: 1.5;
+      white-space: nowrap;
+    }
+
+    .badge-deadline {
+      background: #dc2626;
+      color: #fff;
+    }
+
+    .badge-momentum {
+      background: #d97706;
+      color: #fff;
+    }
+
+    /* Area tag */
+    .area-tag {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    /* Status dot */
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .status-active    { background: #16a34a; }
+    .status-watching  { background: #2563eb; }
+    .status-monitoring { background: #d97706; }
+    .status-queued    { background: #6b7280; }
+
+    /* Expanded panel */
+    .card-body {
+      display: none;
+      padding: 0 14px 14px 14px;
+      border-top: var(--card-border);
+    }
+
+    .card-body.open {
+      display: block;
+    }
+
+    .body-row {
+      margin-top: 10px;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .body-label {
+      font-weight: 500;
+      color: var(--text-secondary);
+      margin-right: 4px;
+    }
+
+    .body-text {
+      color: var(--text-primary);
+    }
+
+    /* Sub-tasks */
+    .subs-list {
+      margin-top: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .sub-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--text-primary);
+    }
+
+    .sub-item input[type="checkbox"] {
+      accent-color: var(--accent);
+      width: 14px;
+      height: 14px;
+      flex-shrink: 0;
+      cursor: default;
+      pointer-events: none;
+    }
+
+    .sub-done {
+      text-decoration: line-through;
+      color: var(--text-secondary);
+    }
+
+    .body-updated {
+      margin-top: 12px;
+      font-size: 12px;
+      color: var(--text-secondary);
+      text-align: right;
+    }
+
+    .empty-state {
+      text-align: center;
+      color: var(--text-secondary);
+      padding: 40px 0;
+      font-size: 14px;
+    }
+
+    @media (max-width: 600px) {
+      .metrics {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="page-header">
+      <div class="page-title">Projects</div>
+      <div class="page-subtitle" id="last-updated"></div>
+    </div>
+
+    <div class="metrics" id="metrics"></div>
+
+    <div class="filters">
+      <div class="filter-row" id="status-filters"></div>
+      <div class="filter-row" id="area-filters"></div>
+    </div>
+
+    <div class="project-list" id="project-list"></div>
+  </div>
+
+  <script>
+    const STATUS_FILTERS = ['All', 'Active', 'Watching', 'Monitoring', 'Queued', 'Time-sensitive'];
+    const AREA_FILTERS   = ['All Areas', 'Builds', 'Home', 'BGA', 'Personal', 'Vehicle'];
+
+    const AREA_DISPLAY = { bga: 'BGA', home: 'Home', builds: 'Builds', personal: 'Personal', vehicle: 'Vehicle' };
+    const STATUS_COLORS = { active: 'status-active', watching: 'status-watching', monitoring: 'status-monitoring', queued: 'status-queued' };
+
+    let allProjects = [];
+    let activeStatus = 'All';
+    let activeArea   = 'All Areas';
+    let expandedIds  = new Set();
+
+    // Format date nicely
+    function fmtDate(iso) {
+      const [y, m, d] = iso.split('-');
+      const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      return `${months[parseInt(m,10)-1]} ${parseInt(d,10)}, ${y}`;
+    }
+
+    // Set last-updated line
+    const today = new Date();
+    const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    document.getElementById('last-updated').textContent =
+      `Updated ${months[today.getMonth()]} ${today.getDate()}, ${today.getFullYear()}`;
+
+    // Build metric cards
+    function renderMetrics(projects) {
+      const counts = { active: 0, watching: 0, monitoring: 0, queued: 0 };
+      projects.forEach(p => { if (counts[p.status] !== undefined) counts[p.status]++; });
+      const labels = { active: 'Active', watching: 'Watching', monitoring: 'Monitoring', queued: 'Queued' };
+      document.getElementById('metrics').innerHTML = Object.entries(labels).map(([k, label]) =>
+        `<div class="metric-card">
+          <div class="metric-label">${label}</div>
+          <div class="metric-value">${counts[k]}</div>
+        </div>`
+      ).join('');
+    }
+
+    // Build filter pills
+    function renderFilters() {
+      const sf = document.getElementById('status-filters');
+      sf.innerHTML = STATUS_FILTERS.map(f =>
+        `<button class="filter-btn${activeStatus === f ? ' active' : ''}" data-type="status" data-val="${f}">${f}</button>`
+      ).join('');
+
+      const af = document.getElementById('area-filters');
+      af.innerHTML = AREA_FILTERS.map(f =>
+        `<button class="filter-btn${activeArea === f ? ' active' : ''}" data-type="area" data-val="${f}">${f}</button>`
+      ).join('');
+    }
+
+    // Sort: time_sensitive first, then alpha
+    function sortProjects(list) {
+      return [...list].sort((a, b) => {
+        if (a.time_sensitive !== b.time_sensitive) return a.time_sensitive ? -1 : 1;
+        return a.title.localeCompare(b.title);
+      });
+    }
+
+    // Filter logic
+    function filteredProjects() {
+      return sortProjects(allProjects.filter(p => {
+        const statusMatch = activeStatus === 'All'
+          ? true
+          : activeStatus === 'Time-sensitive'
+            ? p.time_sensitive
+            : p.status === activeStatus.toLowerCase();
+
+        const areaMatch = activeArea === 'All Areas'
+          ? true
+          : (AREA_DISPLAY[p.area] || '').toLowerCase() === activeArea.toLowerCase();
+
+        return statusMatch && areaMatch;
+      }));
+    }
+
+    // Render a single card
+    function cardHTML(p) {
+      const isOpen = expandedIds.has(p.id);
+
+      const deadlineBadge = p.deadline  ? `<span class="badge badge-deadline">Deadline</span>` : '';
+      const momentumBadge = p.momentum  ? `<span class="badge badge-momentum">Momentum</span>` : '';
+
+      const areaLabel = AREA_DISPLAY[p.area] || p.area;
+      const dotClass  = STATUS_COLORS[p.status] || 'status-queued';
+
+      const subsHTML = p.subs && p.subs.length
+        ? `<div class="subs-list">${p.subs.map(s =>
+            `<label class="sub-item">
+              <input type="checkbox" ${s.done ? 'checked' : ''} />
+              <span class="${s.done ? 'sub-done' : ''}">${s.label}</span>
+            </label>`
+          ).join('')}</div>`
+        : '';
+
+      const contextHTML = p.due_context
+        ? `<div class="body-row"><span class="body-label">Context:</span><span class="body-text">${p.due_context}</span></div>`
+        : '';
+
+      return `
+        <div class="project-card" data-id="${p.id}">
+          <div class="card-header" data-id="${p.id}">
+            <div class="card-left">
+              <span class="card-title">${p.title}</span>
+              ${deadlineBadge}${momentumBadge}
+            </div>
+            <div class="card-right">
+              <span class="area-tag">${areaLabel}</span>
+              <span class="status-dot ${dotClass}" title="${p.status}"></span>
+            </div>
+          </div>
+          <div class="card-body${isOpen ? ' open' : ''}">
+            <div class="body-row">
+              <span class="body-label">Next action:</span>
+              <span class="body-text">${p.next_action}</span>
+            </div>
+            ${contextHTML}
+            ${subsHTML}
+            <div class="body-updated">Updated: ${fmtDate(p.last_updated)}</div>
+          </div>
+        </div>`;
+    }
+
+    // Render project list
+    function renderList() {
+      const list = filteredProjects();
+      const el = document.getElementById('project-list');
+      if (!list.length) {
+        el.innerHTML = '<div class="empty-state">No projects match the current filters.</div>';
+        return;
+      }
+      el.innerHTML = list.map(cardHTML).join('');
+    }
+
+    // Full re-render
+    function render() {
+      renderFilters();
+      renderList();
+    }
+
+    // Event delegation for filter buttons
+    document.addEventListener('click', e => {
+      const btn = e.target.closest('.filter-btn');
+      if (btn) {
+        const { type, val } = btn.dataset;
+        if (type === 'status') activeStatus = val;
+        if (type === 'area')   activeArea   = val;
+        render();
+        return;
+      }
+
+      // Card expand/collapse
+      const header = e.target.closest('.card-header');
+      if (header) {
+        const id = header.dataset.id;
+        if (expandedIds.has(id)) expandedIds.delete(id);
+        else expandedIds.add(id);
+        render();
+      }
+    });
+
+    // Boot
+    fetch('./projects.json')
+      .then(r => r.json())
+      .then(data => {
+        allProjects = data.projects;
+        renderMetrics(allProjects);
+        render();
+      })
+      .catch(() => {
+        document.getElementById('project-list').innerHTML =
+          '<div class="empty-state">Failed to load projects.json.</div>';
+      });
+  </script>
+</body>
+</html>
