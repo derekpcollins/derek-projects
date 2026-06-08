@@ -163,6 +163,28 @@
       "subs": []
     },
     {
+      "id": "home-office",
+      "title": "Home office update",
+      "status": "active",
+      "area": "home",
+      "time_sensitive": false,
+      "deadline": false,
+      "momentum": false,
+      "due_context": "",
+      "next_action": "Clean up current mess",
+      "last_updated": "2026-06-08",
+      "obsidian_note": "01_projects/Home Office Update.md",
+      "subs": [
+        { "label": "Clean up current mess", "done": false },
+        { "label": "Install Philips Hue light switch", "done": false },
+        { "label": "Determine flooring type and calculate quantity needed", "done": false },
+        { "label": "Temporarily move everything out", "done": false },
+        { "label": "Demo current floor/carpet", "done": false },
+        { "label": "Paint walls (dark navy blue — replacing dark gray)", "done": false },
+        { "label": "Install new flooring", "done": false }
+      ]
+    },
+    {
       "id": "mantis-x",
       "title": "MantisX dry fire routine",
       "status": "queued",
