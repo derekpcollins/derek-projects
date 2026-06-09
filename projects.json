@@ -372,6 +372,26 @@
       "last_updated": "2026-06-08",
       "obsidian_note": "01_projects/Zepbound.md",
       "subs": []
+    },
+    {
+      "id": "door-weather-stripping",
+      "title": "Door weather stripping",
+      "status": "active",
+      "area": "home",
+      "time_sensitive": false,
+      "deadline": false,
+      "momentum": false,
+      "due_context": "",
+      "next_action": "Research weather stripping types and measure existing strip on main doors",
+      "last_updated": "2026-06-09",
+      "obsidian_note": "01_projects/Door Weather Stripping.md",
+      "subs": [
+        { "label": "Research weather stripping types (door sweep vs. compression strip)", "done": false },
+        { "label": "Identify existing strip type and measure length needed", "done": false },
+        { "label": "Source replacement materials", "done": false },
+        { "label": "Remove old weather stripping", "done": false },
+        { "label": "Install new weather stripping", "done": false }
+      ]
     }
   ]
 }
