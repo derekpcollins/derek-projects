@@ -310,7 +310,6 @@
 
     <div class="filters">
       <div class="filter-row" id="status-filters"></div>
-      <div class="filter-row" id="area-filters"></div>
     </div>
 
     <div class="project-list" id="project-list"></div>
@@ -318,14 +317,12 @@
 
   <script>
     const STATUS_FILTERS = ['All', 'Active', 'Watching', 'Monitoring', 'Queued', 'Time-sensitive'];
-    const AREA_FILTERS   = ['All Areas', 'Builds', 'Home', 'BGA', 'Personal', 'Vehicle'];
 
     const AREA_DISPLAY = { bga: 'BGA', home: 'Home', builds: 'Builds', personal: 'Personal', vehicle: 'Vehicle' };
     const STATUS_COLORS = { active: 'status-active', watching: 'status-watching', monitoring: 'status-monitoring', queued: 'status-queued' };
 
     let allProjects = [];
     let activeStatus = 'All';
-    let activeArea   = 'All Areas';
     let expandedIds  = new Set();
 
     // Format date nicely
@@ -360,11 +357,6 @@
       sf.innerHTML = STATUS_FILTERS.map(f =>
         `<button class="filter-btn${activeStatus === f ? ' active' : ''}" data-type="status" data-val="${f}">${f}</button>`
       ).join('');
-
-      const af = document.getElementById('area-filters');
-      af.innerHTML = AREA_FILTERS.map(f =>
-        `<button class="filter-btn${activeArea === f ? ' active' : ''}" data-type="area" data-val="${f}">${f}</button>`
-      ).join('');
     }
 
     // Sort: time_sensitive first, then alpha
@@ -378,17 +370,11 @@
     // Filter logic
     function filteredProjects() {
       return sortProjects(allProjects.filter(p => {
-        const statusMatch = activeStatus === 'All'
+        return activeStatus === 'All'
           ? true
           : activeStatus === 'Time-sensitive'
             ? p.time_sensitive
             : p.status === activeStatus.toLowerCase();
-
-        const areaMatch = activeArea === 'All Areas'
-          ? true
-          : (AREA_DISPLAY[p.area] || '').toLowerCase() === activeArea.toLowerCase();
-
-        return statusMatch && areaMatch;
       }));
     }
 
@@ -462,7 +448,6 @@
       if (btn) {
         const { type, val } = btn.dataset;
         if (type === 'status') activeStatus = val;
-        if (type === 'area')   activeArea   = val;
         render();
         return;
       }
