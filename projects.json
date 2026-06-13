@@ -392,6 +392,26 @@
         { "label": "Remove old weather stripping", "done": false },
         { "label": "Install new weather stripping", "done": false }
       ]
+    },
+    {
+      "id": "tenicor-t1-clip-strong-side-carry",
+      "title": "Swap Tenicor Certum T1 Clip to Strong-Side Carry",
+      "status": "active",
+      "area": "personal",
+      "time_sensitive": false,
+      "deadline": false,
+      "momentum": false,
+      "due_context": "",
+      "next_action": "Locate the two screws on the T1 clip attachment",
+      "last_updated": "2026-06-13",
+      "obsidian_note": "01_projects/Swap Tenicor Certum T1 Clip to Strong-Side Carry.md",
+      "subs": [
+        { "label": "Locate the two screws on the T1 clip attachment", "done": false },
+        { "label": "Unscrew both screws completely", "done": false },
+        { "label": "Remove the T1 clip from the current side", "done": false },
+        { "label": "Remount the T1 clip on the opposite side of the holster", "done": false },
+        { "label": "Reinstall and tighten both screws securely", "done": false }
+      ]
     }
   ]
 }
