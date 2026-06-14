@@ -4,6 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Projects</title>
+  <script>
+    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      document.documentElement.classList.add('dark');
+    }
+  </script>
   <style>
     :root {
       --bg: #f9f9f9;
@@ -14,20 +19,20 @@
       --accent: #2563eb;
       --pill-active-bg: #111;
       --pill-active-text: #fff;
-      --metric-bg: #ffffff;
+      --toggle-bg: rgba(0,0,0,0.06);
+      --toggle-color: #555;
     }
 
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --bg: #111;
-        --card-bg: #1a1a1a;
-        --card-border: 1px solid rgba(255,255,255,0.08);
-        --text-primary: #f0f0f0;
-        --text-secondary: #888;
-        --pill-active-bg: #f0f0f0;
-        --pill-active-text: #111;
-        --metric-bg: #1a1a1a;
-      }
+    html.dark {
+      --bg: #111;
+      --card-bg: #1a1a1a;
+      --card-border: 1px solid rgba(255,255,255,0.08);
+      --text-primary: #f0f0f0;
+      --text-secondary: #888;
+      --pill-active-bg: #f0f0f0;
+      --pill-active-text: #111;
+      --toggle-bg: rgba(255,255,255,0.08);
+      --toggle-color: #aaa;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -47,6 +52,9 @@
     }
 
     .page-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
       margin-bottom: 20px;
     }
 
@@ -63,39 +71,27 @@
       margin-top: 4px;
     }
 
-    /* Metric cards */
-    .metrics {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 10px;
-      margin-bottom: 20px;
-    }
-
-    .metric-card {
-      background: var(--metric-bg);
-      border: var(--card-border);
+    .theme-toggle {
+      background: var(--toggle-bg);
+      border: none;
+      cursor: pointer;
+      color: var(--toggle-color);
+      padding: 5px 8px;
       border-radius: 8px;
-      padding: 12px 14px;
+      font-size: 17px;
+      line-height: 1;
+      flex-shrink: 0;
+      margin-top: 2px;
+      transition: color 0.1s;
     }
 
-    .metric-label {
-      font-size: 12px;
-      color: var(--text-secondary);
-      margin-bottom: 4px;
-    }
-
-    .metric-value {
-      font-size: 22px;
-      font-weight: 600;
+    .theme-toggle:hover {
       color: var(--text-primary);
     }
 
     /* Filter bar */
     .filters {
       margin-bottom: 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
     }
 
     .filter-row {
@@ -155,24 +151,15 @@
       background: rgba(0,0,0,0.02);
     }
 
-    @media (prefers-color-scheme: dark) {
-      .card-header:hover {
-        background: rgba(255,255,255,0.03);
-      }
-    }
-
-    .card-left {
-      display: flex;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 6px;
-      min-width: 0;
+    html.dark .card-header:hover {
+      background: rgba(255,255,255,0.03);
     }
 
     .card-title {
       font-weight: 500;
       color: var(--text-primary);
-      white-space: nowrap;
+      flex: 1;
+      min-width: 0;
     }
 
     .card-right {
@@ -202,12 +189,6 @@
       color: #fff;
     }
 
-    /* Area tag */
-    .area-tag {
-      font-size: 12px;
-      color: var(--text-secondary);
-    }
-
     /* Status dot */
     .status-dot {
       width: 7px;
@@ -216,10 +197,22 @@
       flex-shrink: 0;
     }
 
-    .status-active    { background: #16a34a; }
-    .status-watching  { background: #2563eb; }
+    .status-active     { background: #16a34a; }
     .status-monitoring { background: #d97706; }
-    .status-queued    { background: #6b7280; }
+    .status-queued     { background: #6b7280; }
+
+    /* Chevron */
+    .chevron {
+      width: 16px;
+      height: 16px;
+      color: var(--text-secondary);
+      flex-shrink: 0;
+      transition: transform 0.15s;
+    }
+
+    .card-header.open .chevron {
+      transform: rotate(90deg);
+    }
 
     /* Expanded panel */
     .card-body {
@@ -291,22 +284,17 @@
       padding: 40px 0;
       font-size: 14px;
     }
-
-    @media (max-width: 600px) {
-      .metrics {
-        grid-template-columns: repeat(2, 1fr);
-      }
-    }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="page-header">
-      <div class="page-title">Projects</div>
-      <div class="page-subtitle" id="last-updated"></div>
+      <div>
+        <div class="page-title">Projects</div>
+        <div class="page-subtitle" id="last-updated"></div>
+      </div>
+      <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode"></button>
     </div>
-
-    <div class="metrics" id="metrics"></div>
 
     <div class="filters">
       <div class="filter-row" id="status-filters"></div>
@@ -316,50 +304,80 @@
   </div>
 
   <script>
-    const STATUS_FILTERS = ['All', 'Active', 'Watching', 'Monitoring', 'Queued', 'Time-sensitive'];
+    const STATUS_FILTERS = ['All', 'Active', 'Monitoring', 'Queued'];
 
-    const AREA_DISPLAY = { bga: 'BGA', home: 'Home', builds: 'Builds', personal: 'Personal', vehicle: 'Vehicle' };
-    const STATUS_COLORS = { active: 'status-active', watching: 'status-watching', monitoring: 'status-monitoring', queued: 'status-queued' };
+    const STATUS_DOT_CLASS = {
+      active:     'status-active',
+      watching:   'status-active',
+      monitoring: 'status-monitoring',
+      queued:     'status-queued',
+    };
 
     let allProjects = [];
-    let activeStatus = 'All';
+    let activeStatus = 'Active';
     let expandedIds  = new Set();
 
-    // Format date nicely
+    // ── Theme ──────────────────────────────────────────────
+    let manualTheme = null;
+
+    function isDark() {
+      return manualTheme !== null
+        ? manualTheme === 'dark'
+        : window.matchMedia('(prefers-color-scheme: dark)').matches;
+    }
+
+    function applyTheme() {
+      document.documentElement.classList.toggle('dark', isDark());
+      document.getElementById('theme-toggle').textContent = isDark() ? '☀' : '☽';
+    }
+
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+      if (manualTheme === null) applyTheme();
+    });
+
+    document.getElementById('theme-toggle').addEventListener('click', () => {
+      manualTheme = isDark() ? 'light' : 'dark';
+      applyTheme();
+    });
+
+    applyTheme();
+
+    // ── Helpers ────────────────────────────────────────────
     function fmtDate(iso) {
       const [y, m, d] = iso.split('-');
       const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
       return `${months[parseInt(m,10)-1]} ${parseInt(d,10)}, ${y}`;
     }
 
-    // Set last-updated line
+    function isActive(p) {
+      return p.status === 'active' || p.status === 'watching';
+    }
+
     const today = new Date();
-    const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
     document.getElementById('last-updated').textContent =
-      `Updated ${months[today.getMonth()]} ${today.getDate()}, ${today.getFullYear()}`;
+      `Updated ${MONTHS[today.getMonth()]} ${today.getDate()}, ${today.getFullYear()}`;
 
-    // Build metric cards
-    function renderMetrics(projects) {
-      const counts = { active: 0, watching: 0, monitoring: 0, queued: 0 };
-      projects.forEach(p => { if (counts[p.status] !== undefined) counts[p.status]++; });
-      const labels = { active: 'Active', watching: 'Watching', monitoring: 'Monitoring', queued: 'Queued' };
-      document.getElementById('metrics').innerHTML = Object.entries(labels).map(([k, label]) =>
-        `<div class="metric-card">
-          <div class="metric-label">${label}</div>
-          <div class="metric-value">${counts[k]}</div>
-        </div>`
-      ).join('');
+    // ── Counts ─────────────────────────────────────────────
+    function getCounts() {
+      let active = 0, monitoring = 0, queued = 0;
+      allProjects.forEach(p => {
+        if (isActive(p))             active++;
+        else if (p.status === 'monitoring') monitoring++;
+        else if (p.status === 'queued')     queued++;
+      });
+      return { All: allProjects.length, Active: active, Monitoring: monitoring, Queued: queued };
     }
 
-    // Build filter pills
+    // ── Filter pills ───────────────────────────────────────
     function renderFilters() {
-      const sf = document.getElementById('status-filters');
-      sf.innerHTML = STATUS_FILTERS.map(f =>
-        `<button class="filter-btn${activeStatus === f ? ' active' : ''}" data-type="status" data-val="${f}">${f}</button>`
+      const counts = getCounts();
+      document.getElementById('status-filters').innerHTML = STATUS_FILTERS.map(f =>
+        `<button class="filter-btn${activeStatus === f ? ' active' : ''}" data-type="status" data-val="${f}">${f} (${counts[f]})</button>`
       ).join('');
     }
 
-    // Sort: time_sensitive first, then alpha
+    // ── Sort & filter ──────────────────────────────────────
     function sortProjects(list) {
       return [...list].sort((a, b) => {
         if (a.time_sensitive !== b.time_sensitive) return a.time_sensitive ? -1 : 1;
@@ -367,26 +385,22 @@
       });
     }
 
-    // Filter logic
     function filteredProjects() {
       return sortProjects(allProjects.filter(p => {
-        return activeStatus === 'All'
-          ? true
-          : activeStatus === 'Time-sensitive'
-            ? p.time_sensitive
-            : p.status === activeStatus.toLowerCase();
+        if (activeStatus === 'All')        return true;
+        if (activeStatus === 'Active')     return isActive(p);
+        return p.status === activeStatus.toLowerCase();
       }));
     }
 
-    // Render a single card
+    // ── Card HTML ──────────────────────────────────────────
+    const CHEVRON_SVG = `<svg class="chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 4 10 8 6 12"/></svg>`;
+
     function cardHTML(p) {
-      const isOpen = expandedIds.has(p.id);
-
-      const deadlineBadge = p.deadline  ? `<span class="badge badge-deadline">Deadline</span>` : '';
-      const momentumBadge = p.momentum  ? `<span class="badge badge-momentum">Momentum</span>` : '';
-
-      const areaLabel = AREA_DISPLAY[p.area] || p.area;
-      const dotClass  = STATUS_COLORS[p.status] || 'status-queued';
+      const isOpen    = expandedIds.has(p.id);
+      const dotClass  = STATUS_DOT_CLASS[p.status] || 'status-queued';
+      const deadline  = p.deadline ? `<span class="badge badge-deadline">Deadline</span>` : '';
+      const momentum  = p.momentum ? `<span class="badge badge-momentum">Momentum</span>`  : '';
 
       const subsHTML = p.subs && p.subs.length
         ? `<div class="subs-list">${p.subs.map(s =>
@@ -403,14 +417,12 @@
 
       return `
         <div class="project-card" data-id="${p.id}">
-          <div class="card-header" data-id="${p.id}">
-            <div class="card-left">
-              <span class="card-title">${p.title}</span>
-              ${deadlineBadge}${momentumBadge}
-            </div>
+          <div class="card-header${isOpen ? ' open' : ''}" data-id="${p.id}">
+            <span class="card-title">${p.title}</span>
             <div class="card-right">
-              <span class="area-tag">${areaLabel}</span>
               <span class="status-dot ${dotClass}" title="${p.status}"></span>
+              ${deadline}${momentum}
+              ${CHEVRON_SVG}
             </div>
           </div>
           <div class="card-body${isOpen ? ' open' : ''}">
@@ -425,34 +437,29 @@
         </div>`;
     }
 
-    // Render project list
+    // ── Render ─────────────────────────────────────────────
     function renderList() {
       const list = filteredProjects();
       const el = document.getElementById('project-list');
-      if (!list.length) {
-        el.innerHTML = '<div class="empty-state">No projects match the current filters.</div>';
-        return;
-      }
-      el.innerHTML = list.map(cardHTML).join('');
+      el.innerHTML = list.length
+        ? list.map(cardHTML).join('')
+        : '<div class="empty-state">No projects match the current filters.</div>';
     }
 
-    // Full re-render
     function render() {
       renderFilters();
       renderList();
     }
 
-    // Event delegation for filter buttons
+    // ── Events ─────────────────────────────────────────────
     document.addEventListener('click', e => {
       const btn = e.target.closest('.filter-btn');
       if (btn) {
-        const { type, val } = btn.dataset;
-        if (type === 'status') activeStatus = val;
+        activeStatus = btn.dataset.val;
         render();
         return;
       }
 
-      // Card expand/collapse
       const header = e.target.closest('.card-header');
       if (header) {
         const id = header.dataset.id;
@@ -462,12 +469,11 @@
       }
     });
 
-    // Boot
+    // ── Boot ───────────────────────────────────────────────
     fetch('./projects.json')
       .then(r => r.json())
       .then(data => {
         allProjects = data.projects;
-        renderMetrics(allProjects);
         render();
       })
       .catch(() => {
