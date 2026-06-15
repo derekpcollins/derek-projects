@@ -46,9 +46,15 @@
     }
 
     .container {
-      max-width: 860px;
+      max-width: 1200px;
       margin: 0 auto;
-      padding: 24px;
+      padding: 24px 20px;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        padding: 16px 14px;
+      }
     }
 
     .page-header {
@@ -169,37 +175,15 @@
       flex-shrink: 0;
     }
 
-    /* Badges */
-    .badge {
-      font-size: 11px;
-      font-weight: 500;
-      padding: 2px 7px;
-      border-radius: 20px;
-      line-height: 1.5;
+    /* Tags (no pill styling) */
+    .tag {
+      font-size: 12px;
+      font-weight: 400;
       white-space: nowrap;
     }
 
-    .badge-deadline {
-      background: #dc2626;
-      color: #fff;
-    }
-
-    .badge-momentum {
-      background: #d97706;
-      color: #fff;
-    }
-
-    /* Status dot */
-    .status-dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      flex-shrink: 0;
-    }
-
-    .status-active     { background: #16a34a; }
-    .status-monitoring { background: #d97706; }
-    .status-queued     { background: #6b7280; }
+    .tag-deadline { color: #dc2626; }
+    .tag-momentum { color: #d97706; }
 
     /* Chevron */
     .chevron {
@@ -306,12 +290,6 @@
   <script>
     const STATUS_FILTERS = ['All', 'Active', 'Monitoring', 'Queued'];
 
-    const STATUS_DOT_CLASS = {
-      active:     'status-active',
-      watching:   'status-active',
-      monitoring: 'status-monitoring',
-      queued:     'status-queued',
-    };
 
     let allProjects = [];
     let activeStatus = 'Active';
@@ -397,10 +375,9 @@
     const CHEVRON_SVG = `<svg class="chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 4 10 8 6 12"/></svg>`;
 
     function cardHTML(p) {
-      const isOpen    = expandedIds.has(p.id);
-      const dotClass  = STATUS_DOT_CLASS[p.status] || 'status-queued';
-      const deadline  = p.deadline ? `<span class="badge badge-deadline">Deadline</span>` : '';
-      const momentum  = p.momentum ? `<span class="badge badge-momentum">Momentum</span>`  : '';
+      const isOpen   = expandedIds.has(p.id);
+      const deadline = p.deadline ? `<span class="tag tag-deadline">Deadline</span>` : '';
+      const momentum = p.momentum ? `<span class="tag tag-momentum">Momentum</span>` : '';
 
       const subsHTML = p.subs && p.subs.length
         ? `<div class="subs-list">${p.subs.map(s =>
@@ -420,7 +397,6 @@
           <div class="card-header${isOpen ? ' open' : ''}" data-id="${p.id}">
             <span class="card-title">${p.title}</span>
             <div class="card-right">
-              <span class="status-dot ${dotClass}" title="${p.status}"></span>
               ${deadline}${momentum}
               ${CHEVRON_SVG}
             </div>
