@@ -412,6 +412,34 @@
         { "label": "Remount the T1 clip on the opposite side of the holster", "done": false },
         { "label": "Reinstall and tighten both screws securely", "done": false }
       ]
+    },
+    {
+      "id": "outdoor-mud-kitchen",
+      "title": "Outdoor Mud Kitchen",
+      "status": "active",
+      "area": "home",
+      "time_sensitive": false,
+      "deadline": false,
+      "momentum": false,
+      "due_context": "",
+      "next_action": "Plan layout and dimensions",
+      "last_updated": "2026-06-16",
+      "obsidian_note": "01_projects/Outdoor Mud Kitchen.md",
+      "subs": []
+    },
+    {
+      "id": "new-mac-mini",
+      "title": "Set Up New Mac Mini",
+      "status": "active",
+      "area": "personal",
+      "time_sensitive": false,
+      "deadline": false,
+      "momentum": false,
+      "due_context": "",
+      "next_action": "Initial setup and configure as primary AI device",
+      "last_updated": "2026-06-16",
+      "obsidian_note": "01_projects/Set Up New Mac Mini.md",
+      "subs": []
     }
   ]
 }
