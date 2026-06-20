@@ -346,6 +346,20 @@
       "subs": []
     },
     {
+      "id": "workbench",
+      "title": "Workbench build",
+      "status": "active",
+      "area": "home",
+      "time_sensitive": false,
+      "deadline": false,
+      "momentum": true,
+      "due_context": "",
+      "next_action": "Finalize torsion box top build; source lumber; cut sheet goods",
+      "last_updated": "2026-06-08",
+      "obsidian_note": "01_projects/Workbench Build.md",
+      "subs": []
+    },
+    {
       "id": "zepbound",
       "title": "Zepbound",
       "status": "monitoring",
@@ -398,20 +412,6 @@
         { "label": "Remount the T1 clip on the opposite side of the holster", "done": false },
         { "label": "Reinstall and tighten both screws securely", "done": false }
       ]
-    },
-    {
-      "id": "outdoor-mud-kitchen",
-      "title": "Outdoor Mud Kitchen",
-      "status": "active",
-      "area": "home",
-      "time_sensitive": false,
-      "deadline": false,
-      "momentum": false,
-      "due_context": "",
-      "next_action": "Plan layout and dimensions",
-      "last_updated": "2026-06-16",
-      "obsidian_note": "01_projects/Outdoor Mud Kitchen.md",
-      "subs": []
     },
     {
       "id": "new-mac-mini",
