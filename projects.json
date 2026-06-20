@@ -346,20 +346,6 @@
       "subs": []
     },
     {
-      "id": "workbench",
-      "title": "Workbench build",
-      "status": "active",
-      "area": "home",
-      "time_sensitive": false,
-      "deadline": false,
-      "momentum": true,
-      "due_context": "",
-      "next_action": "Finalize torsion box top build; source lumber; cut sheet goods",
-      "last_updated": "2026-06-08",
-      "obsidian_note": "01_projects/Workbench Build.md",
-      "subs": []
-    },
-    {
       "id": "zepbound",
       "title": "Zepbound",
       "status": "monitoring",
