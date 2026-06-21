@@ -175,16 +175,6 @@
       flex-shrink: 0;
     }
 
-    /* Tags (no pill styling) */
-    .tag {
-      font-size: 12px;
-      font-weight: 400;
-      white-space: nowrap;
-    }
-
-    .tag-deadline { color: #dc2626; }
-    .tag-momentum { color: #d97706; }
-
     /* Chevron */
     .chevron {
       width: 16px;
@@ -376,8 +366,6 @@
 
     function cardHTML(p) {
       const isOpen   = expandedIds.has(p.id);
-      const deadline = p.deadline ? `<span class="tag tag-deadline">Deadline</span>` : '';
-      const momentum = p.momentum ? `<span class="tag tag-momentum">Momentum</span>` : '';
 
       const subsHTML = p.subs && p.subs.length
         ? `<div class="subs-list">${p.subs.map(s =>
@@ -397,7 +385,6 @@
           <div class="card-header${isOpen ? ' open' : ''}" data-id="${p.id}">
             <span class="card-title">${p.title}</span>
             <div class="card-right">
-              ${deadline}${momentum}
               ${CHEVRON_SVG}
             </div>
           </div>
