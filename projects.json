@@ -88,6 +88,24 @@
       "subs": []
     },
     {
+      "id": "become-a-better-dad",
+      "title": "Become a Better Dad",
+      "status": "active",
+      "area": "personal",
+      "time_sensitive": false,
+      "deadline": false,
+      "momentum": true,
+      "due_context": "",
+      "next_action": "Compile reading list and pick first book to start",
+      "last_updated": "2026-06-20",
+      "obsidian_note": "01_projects/Become a Better Dad.md",
+      "subs": [
+        { "label": "Compile reading list", "done": false },
+        { "label": "Read first book", "done": false },
+        { "label": "Read second book", "done": false }
+      ]
+    },
+    {
       "id": "debt-payoff",
       "title": "Debt payoff execution plan",
       "status": "monitoring",
